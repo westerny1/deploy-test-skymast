@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  <title>SkyMast</title>
+  <link rel="icon" type="image/png" href="{{url_for('static', filename='icon.png')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+{% endblock %}
+
+{% block body %}
+  <h1>Welcome to SkyMast</h1>
+  <!-- Text Area -->
+  <form id="crosspost-form" action="/" method="POST">
+    <label for="post-text">Post Text:</label>
+    <textarea id="post-text" name="post-text" ></textarea>
+    <div id="character-counter">300</div>
+  <img src="{{url_for('static', filename='photo_icon.png')}}" alt="Photo Icon" style="width: 20px; height: 20px; margin-top: 0px;">
+  <img src="{{url_for('static', filename='emoji_icon.png')}}" alt="Emoji Icon" style="width: 20px; height: 20px; margin-top: 0px;">
+    <label for="post-visibility">Post Visibility:</label>
+    <select id="post-visibility" name="post-visibility" required>
+      <option value="public">Public</option>
+      <option value="unlisted">Unlisted</option>
+      <option value="private">Private</option>
+    </select>
+    <label for="post-to">Post To:</label>
+    <select id="post-to" name="post-to" required>
+      <option value="mastodon">Mastodon</option>
+      <option value="bluesky">Bluesky</option>
+      <option value="both">Both</option>
+    </select>
+    <button type="submit">Crosspost</button>
+    <br>
+
+    <!-- Table of Accounts -->
+    <table>
+      <tr>
+        <th>Accounts</th>
+        <th>Website</th>
+        <th>Actions</th>
+      </tr>
+      {% for account in account_list %}
+        <tr>
+          <td>{{  account.db_email  }}</td>
+          <td>{{  account.db_website  }}</td>
+          <td>
+            <!-- Todo: Delete Account -->
+            <button id="delete_account">Delete</button>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+    
+    <!-- Login Area -->
+    <label for="email">Email:</label>
+    <input id="email" name="email" type="text"  />
+    <label for="password">Password:</label>
+    <input id="password" name="password" type="password"  />
+    <br>
+    <button id="mastodon_login" name="mastodon_login" type="submit">Mastodon Login</button> 
+    <button id="bluesky_login" name='bluesky_login' type="submit">Bluesky Login</button>
+  </form>
+
+  <!-- Settings Area -->
+  <h2>Settings</h2>
+  <form id="settings-form">
+    <label for="mastodon-instance">Mastodon Instance:</label>
+    <input id="mastodon-instance" name="mastodon-instance" type="text" required />
+    <label for="mastodon-access-token">Mastodon Access Token:</label>
+    <input id="mastodon-access-token" name="mastodon-access-token" type="text" required />
+    <label for="bluesky-server">Bluesky Server:</label>
+    <input id="bluesky-server" name="bluesky-server" type="text" required />
+    <label for="bluesky-access-token">Bluesky Access Token:</label>
+    <input id="bluesky-access-token" name="bluesky-access-token" type="text" required />
+    <button type="submit">Save Settings</button>
+  </form>
+  
+  <!-- Javascript Area -->
+  <script> const postText = document.getElementById("post-text"); const characterCounter = document.getElementById("character-counter");
+    postText.addEventListener("input", () => {
+      const remainingCharacters = 300 - postText.value.length;
+      characterCounter.textContent = `${remainingCharacters}`;
+      if (remainingCharacters < 0) {
+        characterCounter.style.color = "red";
+      } else {
+        characterCounter.style.color = "black";
+      }
+    });
+  </script>
+{% endblock %}
